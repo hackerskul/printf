@@ -41,18 +41,25 @@ int _printf(const char *format, ...) {
                     chars_printed++;
                     break;
                 default:
-                    putchar('%');
+                    putchar('U');
+                    putchar('n');
+                    putchar('k');
+                    putchar('n');
+                    putchar('o');
+                    putchar('w');
+                    putchar('n');
+                    putchar(':');
+                    putchar('[');
                     putchar(format[i]);
-                    chars_printed += 2;
+                    putchar(']');
+                    chars_printed += 9;
             }
-        } 
-	else 
-	{
+        } else {
             putchar(format[i]);
             chars_printed++;
         }
     }
 
     va_end(args);
-    return (chars_printed);
+    return chars_printed;
 }
