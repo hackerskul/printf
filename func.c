@@ -3,16 +3,17 @@
 
 int _printf(const char *format, ...) {
     va_list args;
+    int i;
+    int chars_printed;
     va_start(args, format);
 
-    int chars_printed = 0; // Count of characters printed
+    chars_printed = 0;
 
-    for (int i = 0; format[i] != '\0'; i++) {
+    for (i = 0; format[i] != '\0'; i++) {
         if (format[i] == '%') {
-            i++; // Move past '%'
-            if (format[i] == '\0') break; // Avoid undefined behavior
+            i++;
+            if (format[i] == '\0') break;
 
-            // Handle conversion specifiers
             switch (format[i]) {
                 case 'c':
                     putchar(va_arg(args, int));
@@ -31,7 +32,8 @@ int _printf(const char *format, ...) {
                 case 'i': {
                     int num = va_arg(args, int);
                     printf("%d", num);
-                    chars_printed += snprintf(NULL, 0, "%d", num); // Calculate printed characters
+                    chars_printed += snprintf(NULL, 0, "%d", num);
+
                     break;
                 }
                 case '%':
@@ -39,8 +41,8 @@ int _printf(const char *format, ...) {
                     chars_printed++;
                     break;
                 default:
-                    putchar('%'); // Print the '%' character
-                    putchar(format[i]); // Print the unknown specifier
+                    putchar('%');
+                    putchar(format[i]);
                     chars_printed += 2;
             }
         } 
