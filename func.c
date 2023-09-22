@@ -3,54 +3,82 @@
 
 int _printf(const char *format, ...) {
     va_list args;
-    int i;
-    int chars_printed;
+    int count;
     va_start(args, format);
 
-    chars_printed = 0;
+    count = 0;
 
-    for (i = 0; format[i] != '\0'; i++) {
-        if (format[i] == '%') {
-            i++;
-            if (format[i] == '\0') break;
+    while (*format) {
+        char c;
+        const char *str;
+        int num;
+        unsigned int unum;
+        void *ptr;
 
-            switch (format[i]) {
+        if (*format == '%') {
+            format++;
+            switch (*format) {
                 case 'c':
-                    putchar(va_arg(args, int));
-                    chars_printed++;
+                    c = va_arg(args, int);
+                    putchar(c);
+                    count++;
                     break;
-                case 's': {
-                    const char *str = va_arg(args, const char *);
+                case 's':
+                    str = va_arg(args, const char *);
                     while (*str) {
                         putchar(*str);
+                        count++;
                         str++;
-                        chars_printed++;
                     }
                     break;
-                }
-                case 'd':
-                case 'i': {
-                    int num = va_arg(args, int);
-                    printf("%d", num);
-                    chars_printed += snprintf(NULL, 0, "%d", num);
-
-                    break;
-                }
                 case '%':
                     putchar('%');
-                    chars_printed++;
+                    count++;
+                    break;
+                case 'd':
+                    num = va_arg(args, int);
+                    printf("%d", num);
+                    count += snprintf(NULL, 0, "%d", num);
+                    break;
+                case 'u':
+                    unum = va_arg(args, unsigned int);
+                    printf("%u", unum);
+                    count += snprintf(NULL, 0, "%u", unum);
+                    break;
+                case 'o':
+                    unum = va_arg(args, unsigned int);
+                    printf("%o", unum);
+                    count += snprintf(NULL, 0, "%o", unum);
+                    break;
+                case 'x':
+                    unum = va_arg(args, unsigned int);
+                    printf("%x", unum);
+                    count += snprintf(NULL, 0, "%x", unum);
+                    break;
+                case 'p':
+                    ptr = va_arg(args, void *);
+                    printf("%p", ptr);
+                    count += snprintf(NULL, 0, "%p", ptr);
+                    break;
+                case 'l':
+                    num = count;
+                    printf("%d", num);
+                    count += snprintf(NULL, 0, "%d", num);
                     break;
                 default:
-		    putchar('%');
-		    putchar(format[i]);
-                    chars_printed += 10;
+                    putchar('%');
+                    count++;
+                    putchar(*format);
+                    count++;
+                    break;
             }
         } else {
-            putchar(format[i]);
-            chars_printed++;
+            putchar(*format);
+            count++;
         }
+        format++;
     }
 
     va_end(args);
-    return chars_printed;
+    return count;
 }
